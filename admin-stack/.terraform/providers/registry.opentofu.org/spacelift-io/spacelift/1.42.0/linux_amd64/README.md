@@ -87,7 +87,7 @@ in your `.terraformrc` file.
 
 To do this, edit or create a `.terraformrc` in your home folder, and add the following contents:
 
-```hcl
+
 provider_installation {
   dev_overrides {
     "spacelift.io/spacelift-io/spacelift" = "<absolute-path-to-repo>/dist/terraform-provider-spacelift_<OS>_<arch>"
@@ -99,7 +99,7 @@ provider_installation {
 
 Make sure to replace `<absolute-path-to-repo>`, `<OS>`, and `<arch>` with the correct values, for example:
 
-```hcl
+
 "spacelift.io/spacelift-io/spacelift" = "/home/my-user/github.com/spacelift-io/terraform-provider-spacelift/dist/terraform-provider-spacelift_linux_amd64_v1"
 ```
 
@@ -116,7 +116,7 @@ and run `terraform plan`, `terraform apply`, etc as normal. The main difference 
 the provider locally rather than within Spacelift is that you need to tell it how to authenticate
 with your Spacelift account. Here's a minimal example:
 
-```hcl
+
 terraform {
   required_providers {
     spacelift = {

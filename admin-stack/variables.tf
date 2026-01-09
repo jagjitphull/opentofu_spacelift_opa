@@ -48,3 +48,10 @@ variable "repository_name" {
   type        = string
   default     = "spacelift-lab"
 }
+
+
+variable "branch" {
+  description = "Git branch to track"
+  type        = string
+  default     = "main"
+}

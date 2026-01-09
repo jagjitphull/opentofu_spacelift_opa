@@ -9,13 +9,13 @@ resource "spacelift_stack" "project" {
 
   name         = "${var.project_name}-${each.value}"
   description  = var.description != "" ? "${var.description} (${each.value})" : "${var.project_name} stack for ${each.value} environment"
-  repository   = var.github_namespace != "" ? "${var.github_namespace}/${var.repository}" : var.repository
+  repository   = var.repository  # Just the repo name, not org/repo
   branch       = var.branch
   project_root = var.project_root != "" ? var.project_root : var.project_name
   space_id     = var.space_ids[each.value]
-
+  
   # Disable auto-deploy for production if protection enabled
-  autodeploy = var.protect_production && each.value == "production" ? false : var.autodeploy
+  autodeploy   = var.protect_production && each.value == "production" ? false : var.autodeploy
 
   labels = concat(
     var.labels,
@@ -23,11 +23,15 @@ resource "spacelift_stack" "project" {
     var.protect_production && each.value == "production" ? ["protected"] : []
   )
 
-  # Optional: Terraform/OpenTofu version
-  dynamic "opentofu" {
-    for_each = var.opentofu_version != "" ? [1] : []
+  # Use OpenTofu instead of Terraform
+  terraform_workflow_tool = "OPEN_TOFU"
+  terraform_version       = var.opentofu_version != "" ? var.opentofu_version : "1.8.0"
+
+  # GitHub integration - specify namespace for GitHub App
+  dynamic "github_enterprise" {
+    for_each = var.github_namespace != "" ? [1] : []
     content {
-      version = var.opentofu_version
+      namespace = var.github_namespace
     }
   }
 }
@@ -98,4 +102,6 @@ resource "spacelift_role_attachment" "admin" {
 
   role_id  = "ADMIN"
   stack_id = spacelift_stack.project[each.key].id
+  space_id = var.space_ids[each.key]
 }
+
